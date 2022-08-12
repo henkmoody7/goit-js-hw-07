@@ -27,11 +27,24 @@ function onImageClick(e) {
   const originalSrc = e.target.dataset.source;
   if (e.target.nodeName !== "IMG") return;
   e.preventDefault();
-  const instance = basicLightbox.create(`
+
+  const instance = basicLightbox.create(
+    `
    <img src="${originalSrc}">
-    `);
-
+    `,
+    {
+      onShow: () => {
+        document.addEventListener("keydown", onEscClick);
+      },
+      onClose: () => {
+        document.removeEventListener("keydown", onEscClick);
+      },
+    }
+  );
+  const onEscClick = (event) => {
+    if (event.code === "Escape") {
+      instance.close();
+    }
+  };
   instance.show();
-
-  console.log(e.target.dataset.source);
 }
